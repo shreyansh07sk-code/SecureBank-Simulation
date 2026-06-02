@@ -1,0 +1,2536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureBank - Blockchain & Token Security</title>
+    <style>
+        /* --- General Reset and Body Styling --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+            max-width: 900px;
+            width: 100%;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* --- Header Styling --- */
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+
+        /* --- TTS Toggle Button --- */
+        .tts-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tts-toggle:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        .tts-toggle.active {
+            background: rgba(76, 175, 80, 0.3);
+            border-color: #4CAF50;
+        }
+
+        .tts-icon {
+            font-size: 1.2em;
+        }
+
+        /* --- Content Layout --- */
+        .content {
+            padding: 40px;
+        }
+
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* --- Buttons and Forms --- */
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button.secondary {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            box-shadow: 0 4px 15px rgba(245, 87, 108, 0.4);
+        }
+
+        button.secondary:hover {
+            box-shadow: 0 6px 20px rgba(245, 87, 108, 0.6);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .back-btn {
+            background: #6c757d;
+            box-shadow: 0 4px 15px rgba(108, 117, 125, 0.4);
+            margin-top: 20px;
+        }
+
+        .back-btn:hover {
+            box-shadow: 0 6px 20px rgba(108, 117, 125, 0.6);
+        }
+
+        /* --- Dashboard & Cards --- */
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .dashboard-card {
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        
+        .dashboard-card.balance {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .dashboard-card.tokens {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+            color: #333;
+        }
+
+        .dashboard-card.loan {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            color: #333;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .dashboard-card h3 {
+            font-size: 0.9em;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+
+        .dashboard-card .value {
+            font-size: 2em;
+            font-weight: 700;
+        }
+
+        /* --- Alert Messages --- */
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .alert.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .alert.info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        /* --- Transaction & Blockchain Display --- */
+        .transaction-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .transaction-item.credit {
+            border-left-color: #28a745;
+        }
+
+        .transaction-item.debit {
+            border-left-color: #dc3545;
+        }
+
+        .transaction-item.loan {
+            border-left-color: #ff9800;
+        }
+
+        .block-item {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border: 2px solid #e0e0e0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+
+        .block-item strong {
+            color: #667eea;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .loan-info {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .loan-info h4 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        .loan-details {
+            color: #856404;
+            font-size: 0.95em;
+        }
+
+        .loan-details div {
+            margin: 5px 0;
+        }
+
+        /* --- QR Code Modal --- */
+        .qr-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .qr-modal.active {
+            display: flex;
+        }
+
+        .qr-modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            position: relative;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .qr-close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 28px;
+            font-weight: bold;
+            color: #666;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0;
+            width: auto;
+        }
+
+        .qr-close:hover {
+            color: #000;
+            transform: none;
+        }
+
+        #qrCanvas {
+            margin: 20px auto;
+            display: block;
+            border: 3px solid #667eea;
+            border-radius: 10px;
+        }
+
+        /* --- Profile Details Styling --- */
+        .profile-detail {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .profile-detail:last-child {
+            border-bottom: none;
+        }
+
+        .profile-label {
+            color: #666;
+            font-weight: 600;
+        }
+
+        .profile-value {
+            color: #333;
+            font-weight: 600;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <button class="tts-toggle" onclick="toggleTTS()">
+                <span class="tts-icon">🔊</span>
+                <span id="ttsStatus">TTS Off</span>
+            </button>
+            <h1>🏦 SecureBank</h1>
+            <p>Blockchain-Powered Banking with Token Security</p>
+        </div>
+
+        <!-- Content Screens -->
+        <div class="content">
+            <!-- HOME SCREEN -->
+            <div id="homeScreen" class="screen active">
+                <h2 style="text-align: center; margin-bottom: 30px;">Welcome to SecureBank</h2>
+                <div class="btn-group">
+                    <button onclick="showScreen('loginScreen')">🔐 Login</button>
+                    <button onclick="showScreen('createAccountScreen')" class="secondary">➕ Create Account</button>
+                </div>
+            </div>
+
+            <!-- CREATE ACCOUNT SCREEN -->
+            <div id="createAccountScreen" class="screen">
+                <h2>Create New Account</h2>
+                <div id="createAlert"></div>
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="createName" placeholder="Enter your full name">
+                </div>
+                <div class="form-group">
+                    <label>Contact Number</label>
+                    <input type="text" id="createContact" placeholder="10-digit mobile number" maxlength="10">
+                </div>
+                <div class="form-group">
+                    <label>UPI ID (Optional)</label>
+                    <input type="text" id="createUPI" placeholder="yourname@bank (will auto-generate if empty)">
+                </div>
+                <div class="form-group">
+                    <label>Set 4-Digit PIN</label>
+                    <input type="password" id="createPin" placeholder="4-digit PIN" maxlength="4">
+                </div>
+                <div class="form-group">
+                    <label>Initial Deposit (₹)</label>
+                    <input type="number" id="createDeposit" placeholder="Minimum ₹500" min="500">
+                </div>
+                <div class="btn-group">
+                    <button onclick="createAccount()">Create Account</button>
+                    <button onclick="showScreen('homeScreen')" class="back-btn">Back</button>
+                </div>
+            </div>
+
+            <!-- LOGIN SCREEN -->
+            <div id="loginScreen" class="screen">
+                <h2>Login to Your Account</h2>
+                <div id="loginAlert"></div>
+                <div class="form-group">
+                    <label>Account Number</label>
+                    <input type="text" id="loginAcc" placeholder="12-digit account number" maxlength="12">
+                </div>
+                <div class="form-group">
+                    <label>PIN</label>
+                    <input type="password" id="loginPin" placeholder="4-digit PIN" maxlength="4">
+                </div>
+                <div style="text-align: right; margin-bottom: 15px;">
+                    <a href="#" onclick="showScreen('forgotPasswordScreen'); return false;" style="color: #667eea; text-decoration: none; font-size: 0.9em;">Forgot PIN?</a>
+                </div>
+                <div class="btn-group">
+                    <button onclick="login()">Login</button>
+                    <button onclick="showScreen('homeScreen')" class="back-btn">Back</button>
+                </div>
+            </div>
+
+            <!-- FORGOT PASSWORD SCREEN -->
+            <div id="forgotPasswordScreen" class="screen">
+                <h2>Reset Your PIN</h2>
+                <div id="forgotAlert"></div>
+                
+                <div id="forgotStep1">
+                    <p style="color: #666; margin-bottom: 20px;">Enter your account details to verify your identity</p>
+                    <div class="form-group">
+                        <label>Account Number</label>
+                        <input type="text" id="forgotAcc" placeholder="12-digit account number" maxlength="12">
+                    </div>
+                    <div class="form-group">
+                        <label>Registered Phone Number</label>
+                        <input type="text" id="forgotPhone" placeholder="10-digit phone number" maxlength="10">
+                    </div>
+                    <div class="btn-group">
+                        <button onclick="verifyForgotPassword()">Verify & Continue</button>
+                        <button onclick="showScreen('loginScreen'); resetForgotPassword();" class="back-btn">Back</button>
+                    </div>
+                </div>
+
+                <div id="forgotStep2" style="display: none;">
+                    <div class="alert success" style="margin-bottom: 20px;">
+                        ✅ Identity Verified! Please set a new PIN
+                    </div>
+                    <div class="form-group">
+                        <label>New 4-Digit PIN</label>
+                        <input type="password" id="newPin" placeholder="Enter new PIN" maxlength="4">
+                    </div>
+                    <div class="form-group">
+                        <label>Confirm New PIN</label>
+                        <input type="password" id="confirmNewPin" placeholder="Re-enter new PIN" maxlength="4">
+                    </div>
+                    <div class="btn-group">
+                        <button onclick="resetPIN()">Reset PIN</button>
+                        <button onclick="showScreen('loginScreen'); resetForgotPassword();" class="back-btn">Cancel</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PROFILE / BANK DETAILS SCREEN -->
+            <div id="profileScreen" class="screen">
+                <h2>My Bank Details</h2>
+                
+                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 25px; border-radius: 15px; margin-bottom: 25px;">
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <div style="font-size: 3em; margin-bottom: 10px;">👤</div>
+                        <h3 id="profileName" style="font-size: 1.5em; margin-bottom: 5px;"></h3>
+                        <p style="opacity: 0.9;">Account Holder</p>
+                    </div>
+                </div>
+
+                <div style="background: #f8f9fa; border-radius: 10px; padding: 20px; margin-bottom: 20px;">
+                    <h3 style="color: #667eea; margin-bottom: 15px;">📋 Account Information</h3>
+                    <div class="profile-detail">
+                        <div class="profile-label">Account Number</div>
+                        <div class="profile-value" id="profileAccount"></div>
+                    </div>
+                    <div class="profile-detail">
+                        <div class="profile-label">Phone Number</div>
+                        <div class="profile-value" id="profilePhone"></div>
+                    </div>
+                    <div class="profile-detail">
+                        <div class="profile-label">UPI ID</div>
+                        <div class="profile-value" id="profileUPI"></div>
+                    </div>
+                    <div class="profile-detail">
+                        <div class="profile-label">Account Balance</div>
+                        <div class="profile-value" id="profileBalance" style="color: #28a745; font-weight: 700;"></div>
+                    </div>
+                    <div class="profile-detail">
+                        <div class="profile-label">Security Tokens</div>
+                        <div class="profile-value" id="profileTokens" style="color: #ff9800; font-weight: 700;"></div>
+                    </div>
+                </div>
+
+                <div style="background: #fff3cd; border: 2px solid #ffc107; border-radius: 10px; padding: 20px; margin-bottom: 20px;">
+                    <h3 style="color: #856404; margin-bottom: 15px;">🏦 Loan Status</h3>
+                    <div id="profileLoanActive" style="display: none;">
+                        <div class="profile-detail">
+                            <div class="profile-label">Loan Amount</div>
+                            <div class="profile-value" id="profileLoanPrincipal"></div>
+                        </div>
+                        <div class="profile-detail">
+                            <div class="profile-label">Remaining Amount</div>
+                            <div class="profile-value" id="profileLoanRemaining" style="color: #dc3545; font-weight: 700;"></div>
+                        </div>
+                        <div class="profile-detail">
+                            <div class="profile-label">Monthly EMI</div>
+                            <div class="profile-value" id="profileLoanEMI"></div>
+                        </div>
+                    </div>
+                    <div id="profileLoanInactive" style="color: #856404;">
+                        ✅ No active loans
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button onclick="showScreen('changePinScreen')">🔐 Change PIN</button>
+                    <button onclick="generateMyQR()" style="background: linear-gradient(135deg, #00b09b 0%, #96c93d 100%);">📱 Show QR Code</button>
+                </div>
+
+                <button onclick="showScreen('dashboardScreen')" class="back-btn" style="width: 100%; margin-top: 15px;">Back to Dashboard</button>
+            </div>
+
+            <!-- CHANGE PIN SCREEN -->
+            <div id="changePinScreen" class="screen">
+                <h2>Change PIN</h2>
+                <div id="changePinAlert"></div>
+                <div class="form-group">
+                    <label>Current PIN</label>
+                    <input type="password" id="currentPin" placeholder="Enter current PIN" maxlength="4">
+                </div>
+                <div class="form-group">
+                    <label>New PIN</label>
+                    <input type="password" id="changeNewPin" placeholder="Enter new PIN" maxlength="4">
+                </div>
+                <div class="form-group">
+                    <label>Confirm New PIN</label>
+                    <input type="password" id="changeConfirmPin" placeholder="Re-enter new PIN" maxlength="4">
+                </div>
+                <div class="btn-group">
+                    <button onclick="changePIN()">Update PIN</button>
+                    <button onclick="showScreen('profileScreen'); resetChangePinForm();" class="back-btn">Back</button>
+                </div>
+            </div>
+
+            <!-- DASHBOARD SCREEN -->
+            <div id="dashboardScreen" class="screen">
+                <h2>Welcome, <span id="userName"></span>!</h2>
+                <div class="dashboard">
+                    <div class="dashboard-card balance">
+                        <h3>Account Balance</h3>
+                        <div class="value" id="balanceDisplay">₹0.00</div>
+                    </div>
+                    <div class="dashboard-card tokens">
+                        <h3>Security Tokens (SEC)</h3>
+                        <div class="value" id="tokensDisplay">0</div>
+                    </div>
+                    <div class="dashboard-card loan">
+                        <h3>Active Loan</h3>
+                        <div class="value" id="loanDisplay">₹0.00</div>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button onclick="showScreen('depositScreen')">💰 Deposit</button>
+                    <button onclick="showScreen('withdrawScreen')">💸 Withdraw</button>
+                    <button onclick="showScreen('transferScreen')">🔄 Transfer</button>
+                    <button onclick="showScreen('loanScreen')" style="background: linear-gradient(135deg, #ff9800 0%, #ff5722 100%);">🏦 Loan</button>
+                    <button onclick="showScreen('fdScreen')" style="background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);">📊 Fixed Deposit</button>
+                    <button onclick="showScreen('rdScreen')" style="background: linear-gradient(135deg, #9C27B0 0%, #7B1FA2 100%);">💎 Recurring Deposit</button>
+                    <button onclick="showScreen('profileScreen'); showProfile();" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);">👤 Profile</button>
+                    <button onclick="showScreen('miniStatementScreen'); showMiniStatement();">📄 Mini Statement</button>
+                    <button onclick="showScreen('historyScreen'); showHistory();">📜 Full History</button>
+                    <button onclick="showScreen('blockchainScreen'); showBlockchain();">⛓️ Blockchain</button>
+                </div>
+                <div class="btn-group" style="margin-top: 15px;">
+                    <button onclick="logout()" class="back-btn">Logout</button>
+                    <button onclick="resetAllData()" style="background: #dc3545;">🔄 Reset All Data</button>
+                </div>
+            </div>
+
+            <!-- DEPOSIT SCREEN -->
+            <div id="depositScreen" class="screen">
+                <h2>Deposit Money</h2>
+                <div id="depositAlert"></div>
+                <div class="form-group">
+                    <label>Amount to Deposit (₹)</label>
+                    <input type="number" id="depositAmount" placeholder="Enter amount" min="1">
+                </div>
+                <div class="form-group" id="depositPinGroup" style="display: none;">
+                    <label>Enter PIN to Confirm</label>
+                    <input type="password" id="depositPin" placeholder="4-digit PIN" maxlength="4">
+                </div>
+                <div class="btn-group">
+                    <button id="depositNextBtn" onclick="initiateDeposit()">Next</button>
+                    <button id="depositConfirmBtn" onclick="confirmDeposit()" style="display: none;">Confirm Deposit</button>
+                    <button onclick="showScreen('dashboardScreen'); resetDepositUI();" class="back-btn">Back</button>
+                </div>
+            </div>
+
+            <!-- WITHDRAW SCREEN -->
+            <div id="withdrawScreen" class="screen">
+                <h2>Withdraw Money</h2>
+                <div id="withdrawAlert"></div>
+                <div class="form-group">
+                    <label>Amount to Withdraw (₹)</label>
+                    <input type="number" id="withdrawAmount" placeholder="Enter amount" min="1">
+                </div>
+                <div class="form-group" id="withdrawPinGroup" style="display: none;">
+                    <label>Enter PIN to Confirm</label>
+                    <input type="password" id="withdrawPin" placeholder="4-digit PIN" maxlength="4">
+                </div>
+                <div class="btn-group">
+                    <button id="withdrawNextBtn" onclick="initiateWithdraw()">Next</button>
+                    <button id="withdrawConfirmBtn" onclick="confirmWithdraw()" style="display: none;">Confirm Withdrawal</button>
+                    <button onclick="showScreen('dashboardScreen'); resetWithdrawUI();" class="back-btn">Back</button>
+                </div>
+            </div>
+
+            <!-- TRANSFER SCREEN -->
+            <div id="transferScreen" class="screen">
+                <h2>Transfer Money</h2>
+                <p style="color: #666; margin-bottom: 20px;">⚡ Requires 1 SEC Token for secure transfer</p>
+                <div id="transferAlert"></div>
+                
+                <div class="form-group">
+                    <label>Payment Method</label>
+                    <select id="paymentMethod" onchange="updatePaymentFields()">
+                        <option value="">Select payment method</option>
+                        <option value="account">Account Number</option>
+                        <option value="phone">Phone Number</option>
+                        <option value="upi">UPI ID</option>
+                        <option value="qr">QR Code</option>
+                    </select>
+                </div>
+
+                <div id="accountField" class="form-group" style="display: none;">
+                    <label>Receiver Account Number</label>
+                    <input type="text" id="transferAcc" placeholder="12-digit account number" maxlength="12">
+                </div>
+
+                <div id="phoneField" class="form-group" style="display: none;">
+                    <label>Receiver Phone Number</label>
+                    <input type="text" id="transferPhone" placeholder="10-digit phone number" maxlength="10">
+                </div>
+
+                <div id="upiField" class="form-group" style="display: none;">
+                    <label>Receiver UPI ID</label>
+                    <input type="text" id="transferUPI" placeholder="username@bank">
+                </div>
+
+                <div id="qrField" style="display: none;">
+                    <div class="form-group">
+                        <label>Scan QR Code</label>
+                        <button onclick="generateMyQR()" style="background: linear-gradient(135deg, #00b09b 0%, #96c93d 100%); margin-bottom: 15px;">
+                            📱 Show My QR Code
+                        </button>
+                        <div style="text-align: center; margin: 20px 0;">
+                            <div style="background: white; padding: 20px; border-radius: 10px; display: inline-block;">
+                                <canvas id="qrScanner" style="max-width: 100%; border: 2px solid #667eea; border-radius: 8px;"></canvas>
+                            </div>
+                            <p style="margin-top: 15px; color: #666;">Enter receiver's account number to generate QR code</p>
+                        </div>
+                        <input type="text" id="qrAccountInput" placeholder="Enter account number for QR" maxlength="12">
+                        <button onclick="generateReceiverQR()" style="margin-top: 10px;">Generate QR Code</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Amount to Transfer (₹)</label>
+                    <input type="number" id="transferAmount" placeholder="Enter amount" min="1">
+                </div>
+                
+                <div class="form-group" id="transferPinGroup" style="display: none;">
+                    <label>Enter PIN to Confirm</label>
+                    <input type="password" id="transferPin" placeholder="4-digit PIN" maxlength="4">
+                </div>
+                <div class="btn-group">
+                    <button id="transferNextBtn" onclick="initiateTransfer()">Next</button>
+                    <button id="transferConfirmBtn" onclick="confirmTransfer()" style="display: none;">Confirm Transfer</button>
+                    <button onclick="showScreen('dashboardScreen'); resetTransferUI(true);" class="back-btn">Back</button>
+                </div>
+            </div>
+
+            <!-- LOAN SCREEN -->
+            <div id="loanScreen" class="screen">
+                <h2>Loan Services</h2>
+                <div id="loanAlert"></div>
+                
+                <div id="loanApplicationForm">
+                    <div class="form-group">
+                        <label>Loan Type</label>
+                        <select id="loanType" onchange="updateLoanLimits()">
+                            <option value="">Select loan type</option>
+                            <option value="personal">Personal Loan (Max ₹5,00,000)</option>
+                            <option value="home">Home Loan (Max ₹50,00,000)</option>
+                            <option value="car">Car Loan (Max ₹10,00,000)</option>
+                            <option value="education">Education Loan (Max ₹20,00,000)</option>
+                            <option value="business">Business Loan (Max ₹25,00,000)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Loan Amount (₹)</label>
+                        <input type="number" id="loanAmount" placeholder="Enter loan amount" min="10000">
+                        <small id="loanLimitText" style="color: #666;">Select loan type first</small>
+                    </div>
+                    <div class="form-group">
+                        <label>Loan Duration</label>
+                        <select id="loanDuration" onchange="calculateLoanInterest()">
+                            <option value="">Select duration</option>
+                            <option value="12">1 Year (8% interest)</option>
+                            <option value="24">2 Years (10% interest)</option>
+                            <option value="36">3 Years (11% interest)</option>
+                            <option value="60">5 Years (12% interest)</option>
+                            <option value="120">10 Years (13% interest)</option>
+                            <option value="180">15 Years (14% interest)</option>
+                            <option value="240">20 Years (15% interest)</option>
+                        </select>
+                    </div>
+                    <div id="loanCalculation" style="display: none; margin: 20px 0;">
+                        <div class="loan-info">
+                            <h4>Loan Summary</h4>
+                            <div class="loan-details">
+                                <div><strong>Loan Type:</strong> <span id="calcLoanType">-</span></div>
+                                <div><strong>Loan Amount:</strong> <span id="calcPrincipal">₹0</span></div>
+                                <div><strong>Interest Rate:</strong> <span id="calcRate">0%</span></div>
+                                <div><strong>Duration:</strong> <span id="calcDuration">0 months</span></div>
+                                <div><strong>Total Interest:</strong> <span id="calcInterest">₹0</span></div>
+                                <div style="border-top: 2px solid #ffc107; margin-top: 10px; padding-top: 10px;">
+                                    <strong>Total Repayment:</strong> <span id="calcTotal">₹0</span>
+                                </div>
+                                <div><strong>Monthly EMI:</strong> <span id="calcEMI">₹0</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group" id="loanPinGroup" style="display: none;">
+                        <label>Enter PIN to Confirm Loan Application</label>
+                        <input type="password" id="loanPin" placeholder="4-digit PIN" maxlength="4">
+                    </div>
+                    <div class="btn-group">
+                        <button id="loanNextBtn" onclick="initiateLoan()">Calculate & Apply</button>
+                        <button id="loanConfirmBtn" onclick="confirmLoan()" style="display: none;">Confirm Loan</button>
+                        <button onclick="showScreen('dashboardScreen'); resetLoanUI();" class="back-btn">Back</button>
+                    </div>
+                </div>
+
+                <div id="loanRepaymentSection" style="display: none;">
+                    <div class="loan-info">
+                        <h4>Current Loan Details</h4>
+                        <div class="loan-details" id="currentLoanDetails"></div>
+                    </div>
+                    <div class="form-group">
+                        <label>Repayment Amount (₹)</label>
+                        <input type="number" id="repayAmount" placeholder="Enter amount to repay" min="1">
+                    </div>
+                    <div class="form-group" id="repayPinGroup" style="display: none;">
+                        <label>Enter PIN to Confirm Repayment</label>
+                        <input type="password" id="repayPin" placeholder="4-digit PIN" maxlength="4">
+                    </div>
+                    <div class="btn-group">
+                        <button id="repayNextBtn" onclick="initiateRepayment()">Next</button>
+                        <button id="repayConfirmBtn" onclick="confirmRepayment()" style="display: none;">Confirm Repayment</button>
+                        <button onclick="showScreen('dashboardScreen');" class="back-btn">Back</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FIXED DEPOSIT SCREEN -->
+            <div id="fdScreen" class="screen">
+                <h2>Fixed Deposit</h2>
+                <div id="fdAlert"></div>
+                
+                <div id="fdApplicationForm">
+                    <p style="color: #666; margin-bottom: 20px;">Earn guaranteed returns with Fixed Deposits</p>
+                    <div class="form-group">
+                        <label>Deposit Amount (₹)</label>
+                        <input type="number" id="fdAmount" placeholder="Minimum ₹10,000" min="10000">
+                    </div>
+                    <div class="form-group">
+                        <label>Tenure</label>
+                        <select id="fdTenure" onchange="calculateFDReturns()">
+                            <option value="">Select tenure</option>
+                            <option value="6">6 Months (5.5% p.a.)</option>
+                            <option value="12">1 Year (6.5% p.a.)</option>
+                            <option value="24">2 Years (7.0% p.a.)</option>
+                            <option value="36">3 Years (7.5% p.a.)</option>
+                            <option value="60">5 Years (8.0% p.a.)</option>
+                        </select>
+                    </div>
+                    <div id="fdCalculation" style="display: none; margin: 20px 0;">
+                        <div class="loan-info" style="background: #e3f2fd; border-color: #2196F3;">
+                            <h4 style="color: #1565C0;">Maturity Details</h4>
+                            <div class="loan-details" style="color: #1565C0;">
+                                <div><strong>Principal Amount:</strong> <span id="fdPrincipal">₹0</span></div>
+                                <div><strong>Interest Rate:</strong> <span id="fdRate">0%</span></div>
+                                <div><strong>Tenure:</strong> <span id="fdDuration">0 months</span></div>
+                                <div><strong>Interest Earned:</strong> <span id="fdInterest">₹0</span></div>
+                                <div style="border-top: 2px solid #2196F3; margin-top: 10px; padding-top: 10px;">
+                                    <strong>Maturity Amount:</strong> <span id="fdMaturity">₹0</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group" id="fdPinGroup" style="display: none;">
+                        <label>Enter PIN to Confirm FD</label>
+                        <input type="password" id="fdPin" placeholder="4-digit PIN" maxlength="4">
+                    </div>
+                    <div class="btn-group">
+                        <button id="fdNextBtn" onclick="initiateFD()">Calculate & Apply</button>
+                        <button id="fdConfirmBtn" onclick="confirmFD()" style="display: none;">Confirm FD</button>
+                        <button onclick="showScreen('dashboardScreen'); resetFDUI();" class="back-btn">Back</button>
+                    </div>
+                </div>
+
+                <div id="fdListSection" style="display: none;">
+                    <h3 style="margin-bottom: 15px;">Your Fixed Deposits</h3>
+                    <div id="fdList"></div>
+                    <button onclick="showScreen('dashboardScreen');" class="back-btn" style="width: 100%; margin-top: 15px;">Back to Dashboard</button>
+                </div>
+            </div>
+
+            <!-- RECURRING DEPOSIT SCREEN -->
+            <div id="rdScreen" class="screen">
+                <h2>Recurring Deposit</h2>
+                <div id="rdAlert"></div>
+                
+                <p style="color: #666; margin-bottom: 20px;">Save regularly and earn attractive returns</p>
+                <div class="form-group">
+                    <label>Monthly Deposit Amount (₹)</label>
+                    <input type="number" id="rdAmount" placeholder="Minimum ₹500" min="500">
+                </div>
+                <div class="form-group">
+                    <label>Tenure</label>
+                    <select id="rdTenure" onchange="calculateRDReturns()">
+                        <option value="">Select tenure</option>
+                        <option value="12">1 Year (6.0% p.a.)</option>
+                        <option value="24">2 Years (6.5% p.a.)</option>
+                        <option value="36">3 Years (7.0% p.a.)</option>
+                        <option value="60">5 Years (7.5% p.a.)</option>
+                    </select>
+                </div>
+                <div id="rdCalculation" style="display: none; margin: 20px 0;">
+                    <div class="loan-info" style="background: #f3e5f5; border-color: #9C27B0;">
+                        <h4 style="color: #6A1B9A;">Maturity Details</h4>
+                        <div class="loan-details" style="color: #6A1B9A;">
+                            <div><strong>Monthly Deposit:</strong> <span id="rdMonthly">₹0</span></div>
+                            <div><strong>Interest Rate:</strong> <span id="rdRate">0%</span></div>
+                            <div><strong>Tenure:</strong> <span id="rdDuration">0 months</span></div>
+                            <div><strong>Total Invested:</strong> <span id="rdInvested">₹0</span></div>
+                            <div><strong>Interest Earned:</strong> <span id="rdInterest">₹0</span></div>
+                            <div style="border-top: 2px solid #9C27B0; margin-top: 10px; padding-top: 10px;">
+                                <strong>Maturity Amount:</strong> <span id="rdMaturity">₹0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group" id="rdPinGroup" style="display: none;">
+                    <label>Enter PIN to Confirm RD</label>
+                    <input type="password" id="rdPin" placeholder="4-digit PIN" maxlength="4">
+                </div>
+                <div class="btn-group">
+                    <button id="rdNextBtn" onclick="initiateRD()">Calculate & Apply</button>
+                    <button id="rdConfirmBtn" onclick="confirmRD()" style="display: none;">Confirm RD</button>
+                    <button onclick="showScreen('dashboardScreen'); resetRDUI();" class="back-btn">Back</button>
+                </div>
+            </div>
+
+            <!-- MINI STATEMENT SCREEN -->
+            <div id="miniStatementScreen" class="screen">
+                <h2>Mini Statement</h2>
+                <p style="color: #666; margin-bottom: 20px;">Last 10 transactions</p>
+                <div id="miniStatementList"></div>
+                <button onclick="showScreen('dashboardScreen')" class="back-btn" style="width: 100%; margin-top: 15px;">Back to Dashboard</button>
+            </div>
+
+            <!-- TRANSACTION HISTORY SCREEN -->
+            <div id="historyScreen" class="screen">
+                <h2>Transaction History</h2>
+                <div id="transactionList"></div>
+                <button onclick="showScreen('dashboardScreen')" class="back-btn" style="width: 100%;">Back to Dashboard</button>
+            </div>
+
+            <!-- BLOCKCHAIN SCREEN -->
+            <div id="blockchainScreen" class="screen">
+                <h2>Your Blockchain</h2>
+                <p style="color: #666; margin-bottom: 20px;">Immutable ledger of all transactions</p>
+                <div id="blockchainList"></div>
+                <button onclick="showScreen('dashboardScreen')" class="back-btn" style="width: 100%;">Back to Dashboard</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- QR Code Modal -->
+    <div id="qrModal" class="qr-modal">
+        <div class="qr-modal-content">
+            <button class="qr-close" onclick="closeQRModal()">&times;</button>
+            <h2 style="margin-bottom: 20px; color: #667eea;">My QR Code</h2>
+            <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; margin-bottom: 15px;">
+                <div style="font-weight: 600; margin-bottom: 5px;">Account: <span id="qrAccountNo"></span></div>
+                <div style="font-weight: 600; margin-bottom: 5px;">UPI: <span id="qrUPIId"></span></div>
+                <div style="font-weight: 600;">Phone: <span id="qrPhone"></span></div>
+            </div>
+            <canvas id="qrCanvas" width="250" height="250"></canvas>
+            <p style="color: #666; font-size: 0.9em; margin-top: 15px;">Share this QR code to receive payments</p>
+        </div>
+    </div>
+
+    <script>
+        // --- GLOBAL STATE ---
+        let accounts = {};
+        let blockchains = {}; // Account-specific blockchains
+        let currentUser = null;
+        let ttsEnabled = false;
+
+        // Temporary storage for multi-step transactions
+        let depositDetails = {};
+        let withdrawDetails = {};
+        let transferDetails = {};
+        let loanDetails = {};
+        let repayDetails = {};
+        let fdDetails = {};
+        let rdDetails = {};
+
+        // Load data from localStorage on startup
+        function loadData() {
+            const savedAccounts = localStorage.getItem('securebank_accounts');
+            const savedBlockchains = localStorage.getItem('securebank_blockchains');
+            
+            if (savedAccounts) {
+                accounts = JSON.parse(savedAccounts);
+            }
+            if (savedBlockchains) {
+                blockchains = JSON.parse(savedBlockchains);
+            }
+        }
+
+        // Save data to localStorage
+        function saveData() {
+            localStorage.setItem('securebank_accounts', JSON.stringify(accounts));
+            localStorage.setItem('securebank_blockchains', JSON.stringify(blockchains));
+        }
+
+        // --- TTS CONTROL ---
+        function toggleTTS() {
+            ttsEnabled = !ttsEnabled;
+            const btn = document.querySelector('.tts-toggle');
+            const status = document.getElementById('ttsStatus');
+            
+            if (ttsEnabled) {
+                btn.classList.add('active');
+                status.textContent = 'TTS On';
+                speak('Text to speech enabled');
+            } else {
+                btn.classList.remove('active');
+                status.textContent = 'TTS Off';
+                window.speechSynthesis.cancel();
+            }
+        }
+
+        function speak(text) {
+            if (!ttsEnabled) return;
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.rate = 0.9;
+            utterance.pitch = 1;
+            window.speechSynthesis.speak(utterance);
+        }
+
+        // --- SCREEN NAVIGATION ---
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        // --- VALIDATION ---
+        function validateName(name) {
+            return name && name.trim().length >= 3;
+        }
+
+        function validateContact(contact) {
+            return /^\d{10}$/.test(contact);
+        }
+
+        function validatePin(pin) {
+            return /^\d{4}$/.test(pin);
+        }
+
+        function validateAcc(acc) {
+            return /^\d{12}$/.test(acc);
+        }
+
+        // --- ALERT DISPLAY ---
+        function showAlert(elementId, message, type) {
+            const alertEl = document.getElementById(elementId);
+            alertEl.innerHTML = `<div class="alert ${type}">${message}</div>`;
+        }
+
+        // --- BLOCKCHAIN FUNCTIONS ---
+        function createGenesisBlock(accountNumber) {
+            blockchains[accountNumber] = [{
+                index: 0,
+                timestamp: new Date().toISOString(),
+                data: 'Genesis Block - Account Created',
+                previousHash: '0',
+                hash: 'GENESIS_HASH'
+            }];
+        }
+
+        function createBlock(accountNumber, data) {
+            const chain = blockchains[accountNumber];
+            const previousBlock = chain[chain.length - 1];
+            const newBlock = {
+                index: chain.length,
+                timestamp: new Date().toISOString(),
+                data: data,
+                previousHash: previousBlock.hash,
+                hash: simpleHash(chain.length + data + previousBlock.hash)
+            };
+            chain.push(newBlock);
+        }
+
+        function simpleHash(str) {
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) {
+                const char = str.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash;
+            }
+            return 'HASH_' + Math.abs(hash).toString(16).toUpperCase();
+        }
+
+        function showBlockchain() {
+            if (!currentUser) return;
+            
+            const list = document.getElementById('blockchainList');
+            const chain = blockchains[currentUser];
+
+            if (!chain || chain.length === 0) {
+                list.innerHTML = '<p style="text-align: center; color: #999;">No blocks yet</p>';
+                return;
+            }
+
+            list.innerHTML = chain.map(block => 
+                `<div class="block-item">
+                    <div><strong>Block #${block.index}</strong></div>
+                    <div><strong>Time:</strong> ${new Date(block.timestamp).toLocaleString()}</div>
+                    <div><strong>Data:</strong> ${block.data}</div>
+                    <div><strong>Previous Hash:</strong> ${block.previousHash}</div>
+                    <div><strong>Hash:</strong> ${block.hash}</div>
+                </div>`
+            ).join('');
+            
+            speak(`Your blockchain contains ${chain.length} blocks`);
+        }
+
+        // --- ACCOUNT CREATION ---
+        function createAccount() {
+            const name = document.getElementById('createName').value.trim();
+            const contact = document.getElementById('createContact').value.trim();
+            let upiId = document.getElementById('createUPI').value.trim();
+            const pin = document.getElementById('createPin').value.trim();
+            const deposit = parseFloat(document.getElementById('createDeposit').value);
+
+            if (!validateName(name)) {
+                showAlert('createAlert', '❌ Name must be at least 3 characters', 'error');
+                return;
+            }
+            if (!validateContact(contact)) {
+                showAlert('createAlert', '❌ Invalid contact number (10 digits required)', 'error');
+                return;
+            }
+            if (!validatePin(pin)) {
+                showAlert('createAlert', '❌ PIN must be exactly 4 digits', 'error');
+                return;
+            }
+            if (isNaN(deposit) || deposit < 500) {
+                showAlert('createAlert', '❌ Minimum deposit is ₹500', 'error');
+                return;
+            }
+
+            const accountNumber = contact + Math.floor(Math.random() * 100).toString().padStart(2, '0');
+
+            if (accounts[accountNumber]) {
+                showAlert('createAlert', '❌ Account already exists with this contact', 'error');
+                return;
+            }
+
+            // Auto-generate UPI ID if not provided
+            if (!upiId) {
+                upiId = name.toLowerCase().replace(/\s+/g, '') + contact.substring(contact.length - 4) + '@securebank';
+            }
+
+            accounts[accountNumber] = {
+                name,
+                contact,
+                upiId,
+                pin,
+                balance: deposit,
+                tokens: 10,
+                transactions: [],
+                fixedDeposits: [],
+                recurringDeposits: [],
+                loan: {
+                    active: false,
+                    loanType: '',
+                    principal: 0,
+                    totalRepayment: 0,
+                    remaining: 0,
+                    interestRate: 0,
+                    duration: 0,
+                    emi: 0
+                },
+                isPhoneVerified: true
+            };
+
+            createGenesisBlock(accountNumber);
+            createBlock(accountNumber, `Account created with initial deposit ₹${deposit.toFixed(2)}`);
+            
+            saveData(); // Save to localStorage
+
+            showAlert('createAlert', `✅ Account created successfully!<br>Account Number: <strong>${accountNumber}</strong><br>UPI ID: <strong>${upiId}</strong><br>Keep them safe!`, 'success');
+            speak(`Account created successfully. Your account number is ${accountNumber.split('').join(' ')}. Your UPI ID is ${upiId}`);
+
+            setTimeout(() => {
+                document.getElementById('createName').value = '';
+                document.getElementById('createContact').value = '';
+                document.getElementById('createUPI').value = '';
+                document.getElementById('createPin').value = '';
+                document.getElementById('createDeposit').value = '';
+                showScreen('loginScreen');
+            }, 4000);
+        }
+
+        // --- LOGIN & LOGOUT ---
+        function login() {
+            const acc = document.getElementById('loginAcc').value.trim();
+            const pin = document.getElementById('loginPin').value.trim();
+
+            if (!validateAcc(acc) || !validatePin(pin)) {
+                showAlert('loginAlert', '❌ Invalid account number or PIN format', 'error');
+                return;
+            }
+
+            if (!accounts[acc]) {
+                showAlert('loginAlert', '❌ Account not found', 'error');
+                return;
+            }
+
+            if (accounts[acc].pin !== pin) {
+                showAlert('loginAlert', '❌ Incorrect PIN', 'error');
+                return;
+            }
+
+            currentUser = acc;
+            accounts[currentUser].tokens += 2; // Login reward
+            
+            saveData(); // Save to localStorage
+            updateBalance();
+            showScreen('dashboardScreen');
+            speak(`Welcome ${accounts[currentUser].name}. You have received 2 security tokens for logging in.`);
+            
+            document.getElementById('loginAcc').value = '';
+            document.getElementById('loginPin').value = '';
+        }
+
+        function logout() {
+            speak('Logging out. Thank you for using SecureBank.');
+            currentUser = null;
+            showScreen('homeScreen');
+        }
+
+        function resetAllData() {
+            if (confirm('⚠️ This will delete ALL accounts and reset the system. Are you sure?')) {
+                localStorage.removeItem('securebank_accounts');
+                localStorage.removeItem('securebank_blockchains');
+                speak('All data has been reset. Reloading application.');
+                setTimeout(() => {
+                    location.reload();
+                }, 1000);
+            }
+        }
+
+        // --- FORGOT PASSWORD ---
+        let forgotPasswordAcc = null;
+
+        function resetForgotPassword() {
+            document.getElementById('forgotStep1').style.display = 'block';
+            document.getElementById('forgotStep2').style.display = 'none';
+            document.getElementById('forgotAcc').value = '';
+            document.getElementById('forgotPhone').value = '';
+            document.getElementById('newPin').value = '';
+            document.getElementById('confirmNewPin').value = '';
+            document.getElementById('forgotAlert').innerHTML = '';
+            forgotPasswordAcc = null;
+        }
+
+        function verifyForgotPassword() {
+            const acc = document.getElementById('forgotAcc').value.trim();
+            const phone = document.getElementById('forgotPhone').value.trim();
+
+            if (!validateAcc(acc)) {
+                showAlert('forgotAlert', '❌ Invalid account number format', 'error');
+                return;
+            }
+
+            if (!validateContact(phone)) {
+                showAlert('forgotAlert', '❌ Invalid phone number format', 'error');
+                return;
+            }
+
+            if (!accounts[acc]) {
+                showAlert('forgotAlert', '❌ Account not found', 'error');
+                return;
+            }
+
+            if (accounts[acc].contact !== phone) {
+                showAlert('forgotAlert', '❌ Phone number does not match account records', 'error');
+                return;
+            }
+
+            // Verification successful
+            forgotPasswordAcc = acc;
+            document.getElementById('forgotStep1').style.display = 'none';
+            document.getElementById('forgotStep2').style.display = 'block';
+            speak('Identity verified. Please set a new PIN');
+        }
+
+        function resetPIN() {
+            const newPin = document.getElementById('newPin').value.trim();
+            const confirmPin = document.getElementById('confirmNewPin').value.trim();
+
+            if (!validatePin(newPin)) {
+                showAlert('forgotAlert', '❌ PIN must be exactly 4 digits', 'error');
+                return;
+            }
+
+            if (newPin !== confirmPin) {
+                showAlert('forgotAlert', '❌ PINs do not match', 'error');
+                return;
+            }
+
+            accounts[forgotPasswordAcc].pin = newPin;
+            saveData();
+
+            showAlert('forgotAlert', '✅ PIN reset successful! You can now login with your new PIN.', 'success');
+            speak('PIN reset successful');
+
+            setTimeout(() => {
+                resetForgotPassword();
+                showScreen('loginScreen');
+            }, 2500);
+        }
+
+        // --- PROFILE / BANK DETAILS ---
+        function showProfile() {
+            if (!currentUser) return;
+
+            const user = accounts[currentUser];
+            
+            document.getElementById('profileName').textContent = user.name;
+            document.getElementById('profileAccount').textContent = currentUser;
+            document.getElementById('profilePhone').textContent = user.contact;
+            document.getElementById('profileUPI').textContent = user.upiId;
+            document.getElementById('profileBalance').textContent = `₹${user.balance.toFixed(2)}`;
+            document.getElementById('profileTokens').textContent = `${user.tokens} SEC`;
+
+            if (user.loan.active) {
+                document.getElementById('profileLoanActive').style.display = 'block';
+                document.getElementById('profileLoanInactive').style.display = 'none';
+                document.getElementById('profileLoanPrincipal').textContent = `₹${user.loan.principal.toFixed(2)}`;
+                document.getElementById('profileLoanRemaining').textContent = `₹${user.loan.remaining.toFixed(2)}`;
+                document.getElementById('profileLoanEMI').textContent = `₹${user.loan.emi.toFixed(2)}`;
+            } else {
+                document.getElementById('profileLoanActive').style.display = 'none';
+                document.getElementById('profileLoanInactive').style.display = 'block';
+            }
+
+            speak('Showing your bank profile');
+        }
+
+        // --- CHANGE PIN ---
+        function resetChangePinForm() {
+            document.getElementById('currentPin').value = '';
+            document.getElementById('changeNewPin').value = '';
+            document.getElementById('changeConfirmPin').value = '';
+            document.getElementById('changePinAlert').innerHTML = '';
+        }
+
+        function changePIN() {
+            const currentPin = document.getElementById('currentPin').value.trim();
+            const newPin = document.getElementById('changeNewPin').value.trim();
+            const confirmPin = document.getElementById('changeConfirmPin').value.trim();
+            const user = accounts[currentUser];
+
+            if (!validatePin(currentPin)) {
+                showAlert('changePinAlert', '❌ Invalid current PIN format', 'error');
+                return;
+            }
+
+            if (currentPin !== user.pin) {
+                showAlert('changePinAlert', '❌ Current PIN is incorrect', 'error');
+                return;
+            }
+
+            if (!validatePin(newPin)) {
+                showAlert('changePinAlert', '❌ New PIN must be exactly 4 digits', 'error');
+                return;
+            }
+
+            if (newPin === currentPin) {
+                showAlert('changePinAlert', '❌ New PIN must be different from current PIN', 'error');
+                return;
+            }
+
+            if (newPin !== confirmPin) {
+                showAlert('changePinAlert', '❌ New PINs do not match', 'error');
+                return;
+            }
+
+            user.pin = newPin;
+            addTransaction('PIN changed successfully', 'credit');
+            saveData();
+
+            showAlert('changePinAlert', '✅ PIN changed successfully!', 'success');
+            speak('PIN changed successfully');
+
+            setTimeout(() => {
+                resetChangePinForm();
+                showScreen('profileScreen');
+            }, 2000);
+        }
+
+        function updateBalance() {
+            if (!currentUser) return;
+            
+            const user = accounts[currentUser];
+            document.getElementById('userName').textContent = user.name;
+            document.getElementById('balanceDisplay').textContent = `₹${user.balance.toFixed(2)}`;
+            document.getElementById('tokensDisplay').textContent = user.tokens;
+            document.getElementById('loanDisplay').textContent = `₹${user.loan.remaining.toFixed(2)}`;
+        }
+
+        function addTransaction(message, type) {
+            if (!currentUser) return;
+            
+            accounts[currentUser].transactions.unshift({
+                message,
+                time: new Date().toLocaleString(),
+                type
+            });
+            
+            createBlock(currentUser, message);
+        }
+
+        // --- DEPOSIT (PIN CONFIRMATION) ---
+        function resetDepositUI() {
+            document.getElementById('depositPinGroup').style.display = 'none';
+            document.getElementById('depositNextBtn').style.display = 'block';
+            document.getElementById('depositConfirmBtn').style.display = 'none';
+            document.getElementById('depositPin').value = '';
+            depositDetails = {};
+            document.getElementById('depositAmount').value = '';
+            document.getElementById('depositAlert').innerHTML = '';
+        }
+
+        function initiateDeposit() {
+            const amount = parseFloat(document.getElementById('depositAmount').value);
+
+            if (isNaN(amount) || amount <= 0) {
+                showAlert('depositAlert', '❌ Please enter a valid amount', 'error');
+                return;
+            }
+            
+            depositDetails = { amount };
+
+            showAlert('depositAlert', `Enter your PIN to confirm deposit of ₹${amount.toFixed(2)}.`, 'info');
+            document.getElementById('depositNextBtn').style.display = 'none';
+            document.getElementById('depositPinGroup').style.display = 'block';
+            document.getElementById('depositConfirmBtn').style.display = 'block';
+            document.getElementById('depositPin').focus();
+        }
+
+        function confirmDeposit() {
+            const pinAttempt = document.getElementById('depositPin').value.trim();
+            const { amount } = depositDetails;
+            const user = accounts[currentUser];
+
+            if (!validatePin(pinAttempt) || pinAttempt !== user.pin) {
+                showAlert('depositAlert', '❌ Invalid PIN. Transaction cancelled.', 'error');
+                resetDepositUI();
+                return;
+            }
+            
+            // Ensure amount is a number
+            const depositAmount = parseFloat(amount);
+            user.balance = parseFloat(user.balance) + depositAmount;
+            
+            addTransaction(`Deposited ₹${depositAmount.toFixed(2)}`, 'credit');
+            user.tokens += 1;
+            updateBalance();
+            saveData(); // Save to localStorage
+
+            showAlert('depositAlert', `✅ Deposit successful! New Balance: ₹${user.balance.toFixed(2)}`, 'success');
+            speak(`Deposit successful. ${depositAmount.toFixed(2)} rupees added. New balance is ${user.balance.toFixed(2)} rupees.`);
+
+            resetDepositUI();
+            setTimeout(() => showScreen('dashboardScreen'), 2000);
+        }
+        
+        // --- WITHDRAW (PIN CONFIRMATION) ---
+        function resetWithdrawUI() {
+            document.getElementById('withdrawPinGroup').style.display = 'none';
+            document.getElementById('withdrawNextBtn').style.display = 'block';
+            document.getElementById('withdrawConfirmBtn').style.display = 'none';
+            document.getElementById('withdrawPin').value = '';
+            withdrawDetails = {};
+            document.getElementById('withdrawAmount').value = '';
+            document.getElementById('withdrawAlert').innerHTML = '';
+        }
+
+        function initiateWithdraw() {
+            const amount = parseFloat(document.getElementById('withdrawAmount').value);
+            const user = accounts[currentUser];
+
+            if (isNaN(amount) || amount <= 0) {
+                showAlert('withdrawAlert', '❌ Please enter a valid amount', 'error');
+                return;
+            }
+            
+            if (amount > user.balance) {
+                showAlert('withdrawAlert', '⚠️ Insufficient funds', 'error');
+                addTransaction(`Failed withdrawal ₹${amount.toFixed(2)} (Insufficient Funds)`, 'debit');
+                return;
+            }
+
+            withdrawDetails = { amount };
+
+            showAlert('withdrawAlert', `Enter your PIN to confirm withdrawal of ₹${amount.toFixed(2)}.`, 'info');
+            document.getElementById('withdrawNextBtn').style.display = 'none';
+            document.getElementById('withdrawPinGroup').style.display = 'block';
+            document.getElementById('withdrawConfirmBtn').style.display = 'block';
+            document.getElementById('withdrawPin').focus();
+        }
+
+        function confirmWithdraw() {
+            const pinAttempt = document.getElementById('withdrawPin').value.trim();
+            const { amount } = withdrawDetails;
+            const user = accounts[currentUser];
+
+            if (!validatePin(pinAttempt) || pinAttempt !== user.pin) {
+                showAlert('withdrawAlert', '❌ Invalid PIN. Transaction cancelled.', 'error');
+                resetWithdrawUI();
+                return;
+            }
+            
+            // Ensure amount is a number
+            const withdrawAmount = parseFloat(amount);
+            user.balance = parseFloat(user.balance) - withdrawAmount;
+            
+            addTransaction(`Withdrew ₹${withdrawAmount.toFixed(2)}`, 'debit');
+            user.tokens += 1;
+            updateBalance();
+            saveData(); // Save to localStorage
+
+            showAlert('withdrawAlert', `✅ Withdrawal successful! Remaining Balance: ₹${user.balance.toFixed(2)}`, 'success');
+            speak(`Withdrawal successful. ${withdrawAmount.toFixed(2)} rupees withdrawn. Remaining balance is ${user.balance.toFixed(2)} rupees.`);
+
+            resetWithdrawUI();
+            setTimeout(() => showScreen('dashboardScreen'), 2000);
+        }
+
+        // --- TRANSFER (TOKEN COST) ---
+        function updatePaymentFields() {
+            const method = document.getElementById('paymentMethod').value;
+            
+            // Hide all fields first
+            document.getElementById('accountField').style.display = 'none';
+            document.getElementById('phoneField').style.display = 'none';
+            document.getElementById('upiField').style.display = 'none';
+            document.getElementById('qrField').style.display = 'none';
+            
+            // Show selected field
+            if (method === 'account') {
+                document.getElementById('accountField').style.display = 'block';
+            } else if (method === 'phone') {
+                document.getElementById('phoneField').style.display = 'block';
+            } else if (method === 'upi') {
+                document.getElementById('upiField').style.display = 'block';
+            } else if (method === 'qr') {
+                document.getElementById('qrField').style.display = 'block';
+            }
+        }
+
+        function findAccountByPhone(phone) {
+            for (let acc in accounts) {
+                if (accounts[acc].contact === phone) {
+                    return acc;
+                }
+            }
+            return null;
+        }
+
+        function findAccountByUPI(upi) {
+            for (let acc in accounts) {
+                if (accounts[acc].upiId === upi) {
+                    return acc;
+                }
+            }
+            return null;
+        }
+
+        function generateMyQR() {
+            if (!currentUser) return;
+            
+            const user = accounts[currentUser];
+            const qrData = JSON.stringify({
+                account: currentUser,
+                upi: user.upiId,
+                phone: user.contact,
+                name: user.name
+            });
+            
+            document.getElementById('qrAccountNo').textContent = currentUser;
+            document.getElementById('qrUPIId').textContent = user.upiId;
+            document.getElementById('qrPhone').textContent = user.contact;
+            
+            generateQRCode(qrData);
+            document.getElementById('qrModal').classList.add('active');
+            speak('Your QR code is ready');
+        }
+
+        function generateReceiverQR() {
+            const account = document.getElementById('qrAccountInput').value.trim();
+            
+            if (!validateAcc(account)) {
+                showAlert('transferAlert', '❌ Invalid account number', 'error');
+                return;
+            }
+            
+            if (!accounts[account]) {
+                showAlert('transferAlert', '❌ Account not found', 'error');
+                return;
+            }
+            
+            // For simulation, we'll just use this account
+            const canvas = document.getElementById('qrScanner');
+            const ctx = canvas.getContext('2d');
+            canvas.width = 250;
+            canvas.height = 250;
+            
+            const qrData = JSON.stringify({
+                account: account,
+                upi: accounts[account].upiId,
+                phone: accounts[account].contact,
+                name: accounts[account].name
+            });
+            
+            drawQRCode(ctx, qrData, 250);
+            showAlert('transferAlert', `✅ QR Code generated for ${accounts[account].name}`, 'success');
+        }
+
+        function closeQRModal() {
+            document.getElementById('qrModal').classList.remove('active');
+        }
+
+        function generateQRCode(data) {
+            const canvas = document.getElementById('qrCanvas');
+            const ctx = canvas.getContext('2d');
+            const size = 250;
+            
+            drawQRCode(ctx, data, size);
+        }
+
+        function drawQRCode(ctx, data, size) {
+            // Simple QR-like pattern generator (simplified version)
+            const gridSize = 25;
+            const cellSize = size / gridSize;
+            
+            ctx.clearRect(0, 0, size, size);
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, size, size);
+            
+            // Generate pseudo-random pattern based on data
+            let hash = 0;
+            for (let i = 0; i < data.length; i++) {
+                hash = ((hash << 5) - hash) + data.charCodeAt(i);
+                hash = hash & hash;
+            }
+            
+            ctx.fillStyle = 'black';
+            
+            // Draw positioning squares
+            drawPositionSquare(ctx, 0, 0, cellSize);
+            drawPositionSquare(ctx, (gridSize - 7) * cellSize, 0, cellSize);
+            drawPositionSquare(ctx, 0, (gridSize - 7) * cellSize, cellSize);
+            
+            // Draw data pattern
+            for (let row = 0; row < gridSize; row++) {
+                for (let col = 0; col < gridSize; col++) {
+                    // Skip positioning squares
+                    if ((row < 7 && col < 7) || 
+                        (row < 7 && col >= gridSize - 7) || 
+                        (row >= gridSize - 7 && col < 7)) {
+                        continue;
+                    }
+                    
+                    // Generate cell value based on hash and position
+                    const cellHash = hash + row * gridSize + col;
+                    if (cellHash % 2 === 0) {
+                        ctx.fillRect(col * cellSize, row * cellSize, cellSize - 1, cellSize - 1);
+                    }
+                }
+            }
+        }
+
+        function drawPositionSquare(ctx, x, y, cellSize) {
+            // Outer square (7x7)
+            ctx.fillRect(x, y, cellSize * 7, cellSize * 7);
+            ctx.fillStyle = 'white';
+            ctx.fillRect(x + cellSize, y + cellSize, cellSize * 5, cellSize * 5);
+            ctx.fillStyle = 'black';
+            ctx.fillRect(x + cellSize * 2, y + cellSize * 2, cellSize * 3, cellSize * 3);
+        }
+
+        function resetTransferUI(clearInputs = false) {
+            document.getElementById('transferPinGroup').style.display = 'none';
+            document.getElementById('transferNextBtn').style.display = 'block';
+            document.getElementById('transferConfirmBtn').style.display = 'none';
+            document.getElementById('transferPin').value = '';
+            transferDetails = {};
+            
+            if (clearInputs) {
+                document.getElementById('paymentMethod').value = '';
+                document.getElementById('transferAcc').value = '';
+                document.getElementById('transferPhone').value = '';
+                document.getElementById('transferUPI').value = '';
+                document.getElementById('transferAmount').value = '';
+                document.getElementById('qrAccountInput').value = '';
+                updatePaymentFields();
+            }
+            document.getElementById('transferAlert').innerHTML = '';
+        }
+
+        function initiateTransfer() {
+            const method = document.getElementById('paymentMethod').value;
+            let receiverAcc = null;
+            
+            if (!method) {
+                showAlert('transferAlert', '❌ Please select a payment method', 'error');
+                return;
+            }
+            
+            // Find receiver account based on payment method
+            if (method === 'account') {
+                receiverAcc = document.getElementById('transferAcc').value.trim();
+                if (!validateAcc(receiverAcc) || !accounts[receiverAcc]) {
+                    showAlert('transferAlert', '❌ Invalid or non-existent account number', 'error');
+                    return;
+                }
+            } else if (method === 'phone') {
+                const phone = document.getElementById('transferPhone').value.trim();
+                if (!validateContact(phone)) {
+                    showAlert('transferAlert', '❌ Invalid phone number', 'error');
+                    return;
+                }
+                receiverAcc = findAccountByPhone(phone);
+                if (!receiverAcc) {
+                    showAlert('transferAlert', '❌ No account found with this phone number', 'error');
+                    return;
+                }
+            } else if (method === 'upi') {
+                const upi = document.getElementById('transferUPI').value.trim();
+                if (!upi) {
+                    showAlert('transferAlert', '❌ Please enter UPI ID', 'error');
+                    return;
+                }
+                receiverAcc = findAccountByUPI(upi);
+                if (!receiverAcc) {
+                    showAlert('transferAlert', '❌ No account found with this UPI ID', 'error');
+                    return;
+                }
+            } else if (method === 'qr') {
+                receiverAcc = document.getElementById('qrAccountInput').value.trim();
+                if (!validateAcc(receiverAcc) || !accounts[receiverAcc]) {
+                    showAlert('transferAlert', '❌ Invalid account number for QR', 'error');
+                    return;
+                }
+            }
+            
+            const amount = parseFloat(document.getElementById('transferAmount').value);
+            const user = accounts[currentUser];
+
+            if (receiverAcc === currentUser) {
+                showAlert('transferAlert', '❌ Cannot transfer to your own account', 'error');
+                return;
+            }
+            
+            if (isNaN(amount) || amount <= 0) {
+                showAlert('transferAlert', '❌ Please enter a valid amount', 'error');
+                return;
+            }
+            
+            if (amount > user.balance) {
+                showAlert('transferAlert', '⚠️ Insufficient funds', 'error');
+                addTransaction(`Failed Transfer ₹${amount.toFixed(2)} to ${receiverAcc} (Insufficient Funds)`, 'debit');
+                return;
+            }
+            
+            if (user.tokens < 1) {
+                showAlert('transferAlert', '⚠️ Insufficient Security Tokens (1 SEC required for transfer security). Earn tokens by logging in or performing transactions.', 'error');
+                return;
+            }
+
+            transferDetails = { receiverAcc, amount, method };
+
+            const receiverName = accounts[receiverAcc].name;
+            showAlert('transferAlert', `Please enter your PIN to confirm transfer of ₹${amount.toFixed(2)} to ${receiverName} (Cost: 1 SEC Token).`, 'info');
+            document.getElementById('transferNextBtn').style.display = 'none';
+            document.getElementById('transferPinGroup').style.display = 'block';
+            document.getElementById('transferConfirmBtn').style.display = 'block';
+            document.getElementById('transferPin').focus();
+        }
+
+        function confirmTransfer() {
+            const pinAttempt = document.getElementById('transferPin').value.trim();
+            const { receiverAcc, amount, method } = transferDetails;
+            const user = accounts[currentUser];
+
+            if (!validatePin(pinAttempt) || pinAttempt !== user.pin) {
+                showAlert('transferAlert', '❌ Invalid PIN. Transaction cancelled.', 'error');
+                resetTransferUI();
+                return;
+            }
+            
+            // Ensure amounts are numbers
+            const transferAmount = parseFloat(amount);
+            user.tokens -= 1;
+            user.balance = parseFloat(user.balance) - transferAmount;
+            accounts[receiverAcc].balance = parseFloat(accounts[receiverAcc].balance) + transferAmount;
+
+            const methodText = method === 'account' ? 'Account' : 
+                              method === 'phone' ? 'Phone' : 
+                              method === 'upi' ? 'UPI' : 'QR Code';
+            
+            addTransaction(`Transferred ₹${transferAmount.toFixed(2)} to ${receiverAcc} via ${methodText} (Cost 1 SEC Token)`, 'debit');
+            
+            accounts[receiverAcc].transactions.unshift({
+                message: `Received ₹${transferAmount.toFixed(2)} from ${currentUser} via ${methodText}`,
+                time: new Date().toLocaleString(),
+                type: 'credit'
+            });
+            createBlock(receiverAcc, `Received ₹${transferAmount.toFixed(2)} from ${currentUser}`);
+
+            updateBalance();
+            saveData(); // Save to localStorage
+
+            showAlert('transferAlert', `✅ Transfer successful! ₹${transferAmount.toFixed(2)} sent via ${methodText}. 1 SEC Token spent.`, 'success');
+            speak(`Transfer successful. ${transferAmount.toFixed(2)} rupees sent via ${methodText}. One security token spent.`);
+            
+            resetTransferUI(true);
+            setTimeout(() => showScreen('dashboardScreen'), 2000);
+        }
+
+        // --- LOAN FUNCTIONS ---
+        function updateLoanLimits() {
+            const loanType = document.getElementById('loanType').value;
+            const loanLimits = {
+                personal: { max: 500000, text: 'Min: ₹10,000 | Max: ₹5,00,000' },
+                home: { max: 5000000, text: 'Min: ₹1,00,000 | Max: ₹50,00,000' },
+                car: { max: 1000000, text: 'Min: ₹50,000 | Max: ₹10,00,000' },
+                education: { max: 2000000, text: 'Min: ₹50,000 | Max: ₹20,00,000' },
+                business: { max: 2500000, text: 'Min: ₹1,00,000 | Max: ₹25,00,000' }
+            };
+            
+            if (loanType && loanLimits[loanType]) {
+                document.getElementById('loanLimitText').textContent = loanLimits[loanType].text;
+                document.getElementById('loanAmount').setAttribute('max', loanLimits[loanType].max);
+            } else {
+                document.getElementById('loanLimitText').textContent = 'Select loan type first';
+            }
+        }
+
+        function resetLoanUI() {
+            document.getElementById('loanPinGroup').style.display = 'none';
+            document.getElementById('loanNextBtn').style.display = 'block';
+            document.getElementById('loanConfirmBtn').style.display = 'none';
+            document.getElementById('loanPin').value = '';
+            document.getElementById('loanType').value = '';
+            document.getElementById('loanAmount').value = '';
+            document.getElementById('loanDuration').value = '';
+            document.getElementById('loanCalculation').style.display = 'none';
+            document.getElementById('loanLimitText').textContent = 'Select loan type first';
+            loanDetails = {};
+            document.getElementById('loanAlert').innerHTML = '';
+        }
+
+        function calculateLoanInterest() {
+            const loanType = document.getElementById('loanType').value;
+            const amount = parseFloat(document.getElementById('loanAmount').value);
+            const duration = parseInt(document.getElementById('loanDuration').value);
+
+            if (!loanType) {
+                document.getElementById('loanCalculation').style.display = 'none';
+                return;
+            }
+
+            const loanLimits = {
+                personal: { min: 10000, max: 500000 },
+                home: { min: 100000, max: 5000000 },
+                car: { min: 50000, max: 1000000 },
+                education: { min: 50000, max: 2000000 },
+                business: { min: 100000, max: 2500000 }
+            };
+
+            const limits = loanLimits[loanType];
+            
+            if (isNaN(amount) || amount < limits.min || amount > limits.max) {
+                document.getElementById('loanCalculation').style.display = 'none';
+                return;
+            }
+
+            if (!duration) {
+                document.getElementById('loanCalculation').style.display = 'none';
+                return;
+            }
+
+            const interestRates = {
+                12: 0.08,
+                24: 0.10,
+                36: 0.11,
+                60: 0.12,
+                120: 0.13,
+                180: 0.14,
+                240: 0.15
+            };
+
+            const rate = interestRates[duration];
+            const interest = amount * rate;
+            const total = amount + interest;
+            const emi = total / duration;
+
+            const loanTypeNames = {
+                personal: 'Personal Loan',
+                home: 'Home Loan',
+                car: 'Car Loan',
+                education: 'Education Loan',
+                business: 'Business Loan'
+            };
+
+            document.getElementById('calcLoanType').textContent = loanTypeNames[loanType];
+            document.getElementById('calcPrincipal').textContent = `₹${amount.toLocaleString('en-IN')}`;
+            document.getElementById('calcRate').textContent = `${(rate * 100).toFixed(1)}%`;
+            document.getElementById('calcDuration').textContent = `${duration} months`;
+            document.getElementById('calcInterest').textContent = `₹${interest.toLocaleString('en-IN', {maximumFractionDigits: 2})}`;
+            document.getElementById('calcTotal').textContent = `₹${total.toLocaleString('en-IN', {maximumFractionDigits: 2})}`;
+            document.getElementById('calcEMI').textContent = `₹${emi.toLocaleString('en-IN', {maximumFractionDigits: 2})}`;
+
+            document.getElementById('loanCalculation').style.display = 'block';
+        }
+
+        function initiateLoan() {
+            const user = accounts[currentUser];
+
+            if (user.loan.active) {
+                document.getElementById('loanApplicationForm').style.display = 'none';
+                document.getElementById('loanRepaymentSection').style.display = 'block';
+                displayCurrentLoan();
+                return;
+            }
+
+            const loanType = document.getElementById('loanType').value;
+            const amount = parseFloat(document.getElementById('loanAmount').value);
+            const duration = parseInt(document.getElementById('loanDuration').value);
+
+            if (!loanType) {
+                showAlert('loanAlert', '❌ Please select loan type', 'error');
+                return;
+            }
+
+            const loanLimits = {
+                personal: { min: 10000, max: 500000 },
+                home: { min: 100000, max: 5000000 },
+                car: { min: 50000, max: 1000000 },
+                education: { min: 50000, max: 2000000 },
+                business: { min: 100000, max: 2500000 }
+            };
+
+            const limits = loanLimits[loanType];
+
+            if (isNaN(amount) || amount < limits.min || amount > limits.max) {
+                showAlert('loanAlert', `❌ Loan amount must be between ₹${limits.min.toLocaleString('en-IN')} and ₹${limits.max.toLocaleString('en-IN')}`, 'error');
+                return;
+            }
+
+            if (!duration) {
+                showAlert('loanAlert', '❌ Please select loan duration', 'error');
+                return;
+            }
+
+            const interestRates = {
+                12: 0.08,
+                24: 0.10,
+                36: 0.11,
+                60: 0.12,
+                120: 0.13,
+                180: 0.14,
+                240: 0.15
+            };
+
+            const rate = interestRates[duration];
+            const interest = amount * rate;
+            const total = amount + interest;
+            const emi = total / duration;
+
+            loanDetails = {
+                loanType: loanType,
+                principal: amount,
+                duration: duration,
+                interestRate: rate,
+                interest: interest,
+                totalRepayment: total,
+                emi: emi
+            };
+
+            calculateLoanInterest();
+            showAlert('loanAlert', `Enter your PIN to confirm ${loanType} loan application for ₹${amount.toLocaleString('en-IN')}.`, 'info');
+            document.getElementById('loanNextBtn').style.display = 'none';
+            document.getElementById('loanPinGroup').style.display = 'block';
+            document.getElementById('loanConfirmBtn').style.display = 'block';
+            document.getElementById('loanPin').focus();
+        }
+
+        function confirmLoan() {
+            const pinAttempt = document.getElementById('loanPin').value.trim();
+            const user = accounts[currentUser];
+
+            if (!validatePin(pinAttempt) || pinAttempt !== user.pin) {
+                showAlert('loanAlert', '❌ Invalid PIN. Loan application cancelled.', 'error');
+                resetLoanUI();
+                return;
+            }
+
+            user.loan.active = true;
+            user.loan.loanType = loanDetails.loanType;
+            user.loan.principal = loanDetails.principal;
+            user.loan.totalRepayment = loanDetails.totalRepayment;
+            user.loan.remaining = loanDetails.totalRepayment;
+            user.loan.interestRate = loanDetails.interestRate;
+            user.loan.duration = loanDetails.duration;
+            user.loan.emi = loanDetails.emi;
+
+            user.balance += loanDetails.principal;
+            addTransaction(`${loanDetails.loanType.charAt(0).toUpperCase() + loanDetails.loanType.slice(1)} Loan sanctioned: ₹${loanDetails.principal.toLocaleString('en-IN')} (Total repayment: ₹${loanDetails.totalRepayment.toLocaleString('en-IN')})`, 'loan');
+            user.tokens += 2;
+            updateBalance();
+            saveData(); // Save to localStorage
+
+            showAlert('loanAlert', `✅ Loan approved! ₹${loanDetails.principal.toFixed(2)} credited to your account.`, 'success');
+            speak(`Loan approved. ${loanDetails.principal.toFixed(2)} rupees credited to your account. Total repayment is ${loanDetails.totalRepayment.toFixed(2)} rupees.`);
+
+            setTimeout(() => {
+                resetLoanUI();
+                showScreen('dashboardScreen');
+            }, 3000);
+        }
+
+        function displayCurrentLoan() {
+            const user = accounts[currentUser];
+            const loan = user.loan;
+
+            const loanTypeNames = {
+                personal: 'Personal Loan',
+                home: 'Home Loan',
+                car: 'Car Loan',
+                education: 'Education Loan',
+                business: 'Business Loan'
+            };
+
+            document.getElementById('currentLoanDetails').innerHTML = `
+                <div><strong>Loan Type:</strong> ${loanTypeNames[loan.loanType] || 'Personal Loan'}</div>
+                <div><strong>Principal Amount:</strong> ₹${loan.principal.toLocaleString('en-IN', {maximumFractionDigits: 2})}</div>
+                <div><strong>Interest Rate:</strong> ${(loan.interestRate * 100).toFixed(1)}%</div>
+                <div><strong>Duration:</strong> ${loan.duration} months</div>
+                <div><strong>Monthly EMI:</strong> ₹${loan.emi.toLocaleString('en-IN', {maximumFractionDigits: 2})}</div>
+                <div style="border-top: 2px solid #ffc107; margin-top: 10px; padding-top: 10px;">
+                    <strong>Total Repayment:</strong> ₹${loan.totalRepayment.toLocaleString('en-IN', {maximumFractionDigits: 2})}
+                </div>
+                <div><strong>Amount Remaining:</strong> ₹${loan.remaining.toLocaleString('en-IN', {maximumFractionDigits: 2})}</div>
+            `;
+        }
+
+        function initiateRepayment() {
+            const amount = parseFloat(document.getElementById('repayAmount').value);
+            const user = accounts[currentUser];
+
+            if (isNaN(amount) || amount <= 0) {
+                showAlert('loanAlert', '❌ Please enter a valid amount', 'error');
+                return;
+            }
+
+            if (amount > user.balance) {
+                showAlert('loanAlert', '⚠️ Insufficient funds in your account', 'error');
+                return;
+            }
+
+            if (amount > user.loan.remaining) {
+                showAlert('loanAlert', `⚠️ Repayment amount exceeds remaining loan (₹${user.loan.remaining.toFixed(2)})`, 'error');
+                return;
+            }
+
+            repayDetails = { amount };
+
+            showAlert('loanAlert', `Enter your PIN to confirm repayment of ₹${amount.toFixed(2)}.`, 'info');
+            document.getElementById('repayNextBtn').style.display = 'none';
+            document.getElementById('repayPinGroup').style.display = 'block';
+            document.getElementById('repayConfirmBtn').style.display = 'block';
+            document.getElementById('repayPin').focus();
+        }
+
+        function confirmRepayment() {
+            const pinAttempt = document.getElementById('repayPin').value.trim();
+            const { amount } = repayDetails;
+            const user = accounts[currentUser];
+
+            if (!validatePin(pinAttempt) || pinAttempt !== user.pin) {
+                showAlert('loanAlert', '❌ Invalid PIN. Repayment cancelled.', 'error');
+                document.getElementById('repayPinGroup').style.display = 'none';
+                document.getElementById('repayNextBtn').style.display = 'block';
+                document.getElementById('repayConfirmBtn').style.display = 'none';
+                document.getElementById('repayPin').value = '';
+                return;
+            }
+
+            user.balance -= amount;
+            user.loan.remaining -= amount;
+            addTransaction(`Loan repayment: ₹${amount.toFixed(2)} (Remaining: ₹${user.loan.remaining.toFixed(2)})`, 'loan');
+            user.tokens += 1;
+            saveData(); // Save to localStorage
+
+            if (user.loan.remaining <= 0.01) {
+                user.loan.active = false;
+                user.loan.principal = 0;
+                user.loan.totalRepayment = 0;
+                user.loan.remaining = 0;
+                user.loan.interestRate = 0;
+                user.loan.duration = 0;
+                user.loan.emi = 0;
+
+                showAlert('loanAlert', `✅ Loan fully repaid! Congratulations! 🎉`, 'success');
+                speak(`Congratulations! Your loan has been fully repaid.`);
+                
+                setTimeout(() => {
+                    document.getElementById('loanApplicationForm').style.display = 'block';
+                    document.getElementById('loanRepaymentSection').style.display = 'none';
+                    document.getElementById('repayAmount').value = '';
+                    document.getElementById('repayPinGroup').style.display = 'none';
+                    document.getElementById('repayNextBtn').style.display = 'block';
+                    document.getElementById('repayConfirmBtn').style.display = 'none';
+                    document.getElementById('loanAlert').innerHTML = '';
+                    showScreen('dashboardScreen');
+                }, 3000);
+            } else {
+                updateBalance();
+                displayCurrentLoan();
+                showAlert('loanAlert', `✅ Repayment successful! Remaining: ₹${user.loan.remaining.toFixed(2)}`, 'success');
+                speak(`Repayment successful. ${amount.toFixed(2)} rupees paid. Remaining loan amount is ${user.loan.remaining.toFixed(2)} rupees.`);
+
+                document.getElementById('repayAmount').value = '';
+                document.getElementById('repayPinGroup').style.display = 'none';
+                document.getElementById('repayNextBtn').style.display = 'block';
+                document.getElementById('repayConfirmBtn').style.display = 'none';
+            }
+
+            updateBalance();
+        }
+
+        // --- HISTORY DISPLAY ---
+        function showHistory() {
+            if (!currentUser) return; 
+            
+            const list = document.getElementById('transactionList');
+            const transactions = accounts[currentUser].transactions;
+
+            if (transactions.length === 0) {
+                list.innerHTML = '<p style="text-align: center; color: #999;">No transactions yet</p>';
+                speak('No transactions yet');
+                return;
+            }
+
+            list.innerHTML = transactions.map(t => 
+                `<div class="transaction-item ${t.type}">
+                    <div style="font-weight: 600; margin-bottom: 5px;">${t.message}</div>
+                    <div style="font-size: 0.9em; color: #666;">${t.time}</div>
+                </div>`
+            ).join('');
+            
+            speak(`You have ${transactions.length} transactions in your history`);
+        }
+
+        // --- MINI STATEMENT ---
+        function showMiniStatement() {
+            if (!currentUser) return;
+            
+            const list = document.getElementById('miniStatementList');
+            const transactions = accounts[currentUser].transactions.slice(0, 10);
+
+            if (transactions.length === 0) {
+                list.innerHTML = '<p style="text-align: center; color: #999;">No transactions yet</p>';
+                speak('No transactions yet');
+                return;
+            }
+
+            list.innerHTML = transactions.map(t => 
+                `<div class="transaction-item ${t.type}">
+                    <div style="font-weight: 600; margin-bottom: 5px;">${t.message}</div>
+                    <div style="font-size: 0.9em; color: #666;">${t.time}</div>
+                </div>`
+            ).join('');
+            
+            speak(`Showing your last ${transactions.length} transactions`);
+        }
+
+        // --- FIXED DEPOSIT FUNCTIONS ---
+        function resetFDUI() {
+            document.getElementById('fdPinGroup').style.display = 'none';
+            document.getElementById('fdNextBtn').style.display = 'block';
+            document.getElementById('fdConfirmBtn').style.display = 'none';
+            document.getElementById('fdPin').value = '';
+            document.getElementById('fdAmount').value = '';
+            document.getElementById('fdTenure').value = '';
+            document.getElementById('fdCalculation').style.display = 'none';
+            fdDetails = {};
+            document.getElementById('fdAlert').innerHTML = '';
+        }
+
+        function calculateFDReturns() {
+            const amount = parseFloat(document.getElementById('fdAmount').value);
+            const tenure = parseInt(document.getElementById('fdTenure').value);
+
+            if (isNaN(amount) || amount < 10000) {
+                document.getElementById('fdCalculation').style.display = 'none';
+                return;
+            }
+
+            if (!tenure) {
+                document.getElementById('fdCalculation').style.display = 'none';
+                return;
+            }
+
+            const rateMap = {
+                6: 0.055,
+                12: 0.065,
+                24: 0.070,
+                36: 0.075,
+                60: 0.080
+            };
+
+            const annualRate = rateMap[tenure];
+            const interest = (amount * annualRate * tenure) / 12;
+            const maturity = amount + interest;
+
+            document.getElementById('fdPrincipal').textContent = `₹${amount.toLocaleString('en-IN')}`;
+            document.getElementById('fdRate').textContent = `${(annualRate * 100).toFixed(1)}% p.a.`;
+            document.getElementById('fdDuration').textContent = `${tenure} months`;
+            document.getElementById('fdInterest').textContent = `₹${interest.toLocaleString('en-IN', {maximumFractionDigits: 2})}`;
+            document.getElementById('fdMaturity').textContent = `₹${maturity.toLocaleString('en-IN', {maximumFractionDigits: 2})}`;
+
+            document.getElementById('fdCalculation').style.display = 'block';
+        }
+
+        function initiateFD() {
+            const amount = parseFloat(document.getElementById('fdAmount').value);
+            const tenure = parseInt(document.getElementById('fdTenure').value);
+            const user = accounts[currentUser];
+
+            if (isNaN(amount) || amount < 10000) {
+                showAlert('fdAlert', '❌ Minimum FD amount is ₹10,000', 'error');
+                return;
+            }
+
+            if (!tenure) {
+                showAlert('fdAlert', '❌ Please select tenure', 'error');
+                return;
+            }
+
+            if (amount > user.balance) {
+                showAlert('fdAlert', '⚠️ Insufficient balance', 'error');
+                return;
+            }
+
+            const rateMap = {
+                6: 0.055,
+                12: 0.065,
+                24: 0.070,
+                36: 0.075,
+                60: 0.080
+            };
+
+            const annualRate = rateMap[tenure];
+            const interest = (amount * annualRate * tenure) / 12;
+            const maturity = amount + interest;
+
+            fdDetails = { amount, tenure, annualRate, interest, maturity };
+
+            calculateFDReturns();
+            showAlert('fdAlert', `Enter your PIN to confirm FD of ₹${amount.toLocaleString('en-IN')}.`, 'info');
+            document.getElementById('fdNextBtn').style.display = 'none';
+            document.getElementById('fdPinGroup').style.display = 'block';
+            document.getElementById('fdConfirmBtn').style.display = 'block';
+            document.getElementById('fdPin').focus();
+        }
+
+        function confirmFD() {
+            const pinAttempt = document.getElementById('fdPin').value.trim();
+            const user = accounts[currentUser];
+
+            if (!validatePin(pinAttempt) || pinAttempt !== user.pin) {
+                showAlert('fdAlert', '❌ Invalid PIN. Transaction cancelled.', 'error');
+                resetFDUI();
+                return;
+            }
+
+            if (!user.fixedDeposits) user.fixedDeposits = [];
+
+            user.balance -= fdDetails.amount;
+            user.fixedDeposits.push({
+                amount: fdDetails.amount,
+                tenure: fdDetails.tenure,
+                rate: fdDetails.annualRate,
+                maturity: fdDetails.maturity,
+                startDate: new Date().toISOString(),
+                maturityDate: new Date(Date.now() + fdDetails.tenure * 30 * 24 * 60 * 60 * 1000).toISOString()
+            });
+
+            addTransaction(`Fixed Deposit created: ₹${fdDetails.amount.toLocaleString('en-IN')} for ${fdDetails.tenure} months`, 'credit');
+            user.tokens += 1;
+            updateBalance();
+            saveData();
+
+            showAlert('fdAlert', `✅ Fixed Deposit created successfully! Maturity: ₹${fdDetails.maturity.toLocaleString('en-IN')}`, 'success');
+            speak(`Fixed deposit created successfully`);
+
+            setTimeout(() => {
+                resetFDUI();
+                showScreen('dashboardScreen');
+            }, 2500);
+        }
+
+        // --- RECURRING DEPOSIT FUNCTIONS ---
+        function resetRDUI() {
+            document.getElementById('rdPinGroup').style.display = 'none';
+            document.getElementById('rdNextBtn').style.display = 'block';
+            document.getElementById('rdConfirmBtn').style.display = 'none';
+            document.getElementById('rdPin').value = '';
+            document.getElementById('rdAmount').value = '';
+            document.getElementById('rdTenure').value = '';
+            document.getElementById('rdCalculation').style.display = 'none';
+            rdDetails = {};
+            document.getElementById('rdAlert').innerHTML = '';
+        }
+
+        function calculateRDReturns() {
+            const monthly = parseFloat(document.getElementById('rdAmount').value);
+            const tenure = parseInt(document.getElementById('rdTenure').value);
+
+            if (isNaN(monthly) || monthly < 500) {
+                document.getElementById('rdCalculation').style.display = 'none';
+                return;
+            }
+
+            if (!tenure) {
+                document.getElementById('rdCalculation').style.display = 'none';
+                return;
+            }
+
+            const rateMap = {
+                12: 0.060,
+                24: 0.065,
+                36: 0.070,
+                60: 0.075
+            };
+
+            const annualRate = rateMap[tenure];
+            const invested = monthly * tenure;
+            // Simple interest calculation for RD
+            const interest = (monthly * tenure * (tenure + 1) * annualRate) / (2 * 12);
+            const maturity = invested + interest;
+
+            document.getElementById('rdMonthly').textContent = `₹${monthly.toLocaleString('en-IN')}`;
+            document.getElementById('rdRate').textContent = `${(annualRate * 100).toFixed(1)}% p.a.`;
+            document.getElementById('rdDuration').textContent = `${tenure} months`;
+            document.getElementById('rdInvested').textContent = `₹${invested.toLocaleString('en-IN')}`;
+            document.getElementById('rdInterest').textContent = `₹${interest.toLocaleString('en-IN', {maximumFractionDigits: 2})}`;
+            document.getElementById('rdMaturity').textContent = `₹${maturity.toLocaleString('en-IN', {maximumFractionDigits: 2})}`;
+
+            document.getElementById('rdCalculation').style.display = 'block';
+        }
+
+        function initiateRD() {
+            const monthly = parseFloat(document.getElementById('rdAmount').value);
+            const tenure = parseInt(document.getElementById('rdTenure').value);
+            const user = accounts[currentUser];
+
+            if (isNaN(monthly) || monthly < 500) {
+                showAlert('rdAlert', '❌ Minimum monthly deposit is ₹500', 'error');
+                return;
+            }
+
+            if (!tenure) {
+                showAlert('rdAlert', '❌ Please select tenure', 'error');
+                return;
+            }
+
+            if (monthly > user.balance) {
+                showAlert('rdAlert', '⚠️ Insufficient balance for first installment', 'error');
+                return;
+            }
+
+            const rateMap = {
+                12: 0.060,
+                24: 0.065,
+                36: 0.070,
+                60: 0.075
+            };
+
+            const annualRate = rateMap[tenure];
+            const invested = monthly * tenure;
+            const interest = (monthly * tenure * (tenure + 1) * annualRate) / (2 * 12);
+            const maturity = invested + interest;
+
+            rdDetails = { monthly, tenure, annualRate, invested, interest, maturity };
+
+            calculateRDReturns();
+            showAlert('rdAlert', `Enter your PIN to confirm RD of ₹${monthly.toLocaleString('en-IN')}/month.`, 'info');
+            document.getElementById('rdNextBtn').style.display = 'none';
+            document.getElementById('rdPinGroup').style.display = 'block';
+            document.getElementById('rdConfirmBtn').style.display = 'block';
+            document.getElementById('rdPin').focus();
+        }
+
+        function confirmRD() {
+            const pinAttempt = document.getElementById('rdPin').value.trim();
+            const user = accounts[currentUser];
+
+            if (!validatePin(pinAttempt) || pinAttempt !== user.pin) {
+                showAlert('rdAlert', '❌ Invalid PIN. Transaction cancelled.', 'error');
+                resetRDUI();
+                return;
+            }
+
+            if (!user.recurringDeposits) user.recurringDeposits = [];
+
+            user.balance -= rdDetails.monthly;
+            user.recurringDeposits.push({
+                monthly: rdDetails.monthly,
+                tenure: rdDetails.tenure,
+                rate: rdDetails.annualRate,
+                maturity: rdDetails.maturity,
+                paidInstallments: 1,
+                startDate: new Date().toISOString(),
+                maturityDate: new Date(Date.now() + rdDetails.tenure * 30 * 24 * 60 * 60 * 1000).toISOString()
+            });
+
+            addTransaction(`Recurring Deposit started: ₹${rdDetails.monthly.toLocaleString('en-IN')}/month for ${rdDetails.tenure} months`, 'credit');
+            user.tokens += 1;
+            updateBalance();
+            saveData();
+
+            showAlert('rdAlert', `✅ Recurring Deposit started successfully! Maturity: ₹${rdDetails.maturity.toLocaleString('en-IN')}`, 'success');
+            speak(`Recurring deposit started successfully`);
+
+            setTimeout(() => {
+                resetRDUI();
+                showScreen('dashboardScreen');
+            }, 2500);
+        }
+
+        // Check loan status on screen show
+        document.addEventListener('DOMContentLoaded', function() {
+            const observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                    if (mutation.target.id === 'loanScreen' && mutation.target.classList.contains('active')) {
+                        const user = accounts[currentUser];
+                        if (user && user.loan.active) {
+                            document.getElementById('loanApplicationForm').style.display = 'none';
+                            document.getElementById('loanRepaymentSection').style.display = 'block';
+                            displayCurrentLoan();
+                        } else {
+                            document.getElementById('loanApplicationForm').style.display = 'block';
+                            document.getElementById('loanRepaymentSection').style.display = 'none';
+                        }
+                    }
+                });
+            });
+
+            const loanScreen = document.getElementById('loanScreen');
+            if (loanScreen) {
+                observer.observe(loanScreen, { attributes: true, attributeFilter: ['class'] });
+            }
+        });
+
+        window.onload = () => {
+            // Load saved data first
+            loadData();
+            
+            // If no accounts exist, create test accounts
+            if (Object.keys(accounts).length === 0) {
+                // Account 1: Alice Smith
+                accounts['123456789012'] = {
+                    name: 'Alice Smith',
+                    contact: '9876543210',
+                    upiId: 'alice3210@securebank',
+                    pin: '1234',
+                    balance: 50000.00,
+                    tokens: 20,
+                    transactions: [],
+                    fixedDeposits: [],
+                    recurringDeposits: [],
+                    loan: {
+                        active: false,
+                        loanType: '',
+                        principal: 0,
+                        totalRepayment: 0,
+                        remaining: 0,
+                        interestRate: 0,
+                        duration: 0,
+                        emi: 0
+                    },
+                    isPhoneVerified: true
+                };
+                createGenesisBlock('123456789012');
+                
+                // Account 2: Bob Johnson
+                accounts['555566667788'] = {
+                    name: 'Bob Johnson',
+                    contact: '5555666677',
+                    upiId: 'bob6677@securebank',
+                    pin: '5678',
+                    balance: 30000.00,
+                    tokens: 15,
+                    transactions: [],
+                    fixedDeposits: [],
+                    recurringDeposits: [],
+                    loan: {
+                        active: false,
+                        loanType: '',
+                        principal: 0,
+                        totalRepayment: 0,
+                        remaining: 0,
+                        interestRate: 0,
+                        duration: 0,
+                        emi: 0
+                    },
+                    isPhoneVerified: true
+                };
+                createGenesisBlock('555566667788');
+                
+                saveData();
+            }
+            
+            showScreen('homeScreen');
+        };
+    </script>
+</body>
+</html>
