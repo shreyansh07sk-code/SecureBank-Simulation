@@ -338,7 +338,7 @@ Contributions are welcome.
 
 Cybersecurity Student
 
-GitHub: https://github.com/shreyansh07sk
+GitHub: https://github.com/shreyansh07sk-code
 
 ---
 
